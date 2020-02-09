@@ -11,23 +11,26 @@ using namespace std;
 
 vector<vector<int> > grid;
 int r=0,c=0;
-string island;
+vector<pair<int, int> > island;
 bool v[51][51];
 
-void dfs(int i, int j, char d) {
+int x;
+int y;
+
+void dfs(int i, int j) {
 	if(i<0 || i>=r || j<0 || j>=c)
 		return;
 	if(v[i][j])
 		return;
 	v[i][j]=1;
 	if(grid[i][j])
-		island+=d;
+		island.push_back({i-x,j-y});
 	else
 		return;
-	dfs(i+1,j,'D');  // D - Down
-	dfs(i-1,j,'U');
-	dfs(i,j+1,'R');
-	dfs(i,j-1,'L');
+	dfs(i+1,j);
+	dfs(i-1,j);
+	dfs(i,j+1);
+	dfs(i,j-1);
 }
 
 
@@ -36,18 +39,20 @@ int main() {
 	grid = { 
 		{1,1,0,1,1},
 		{1,0,0,0,0},
-		{0,0,0,0,1},
+		{0,0,0,1,0 },
 		{1,1,0,1,1}
 	};
 	r=grid.size();
 	if(r)
 		c=grid[0].size();
-	set<string> s;
+	set<vector<pair<int, int> > > s;
 	for(int i=0;i<r;i++)
 		for(int j=0;j<c;j++)
 			if(!v[i][j] && grid[i][j]) {
-				island = "";
-				dfs(i, j, 'S'); // S - start 
+				island.clear();
+				x=i;
+				y=j;
+				dfs(i, j);
 				s.insert(island);
 			}
 	cout<<s.size();
